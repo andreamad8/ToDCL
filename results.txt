@@ -1,0 +1,193 @@
+DST 
+python scorer.py --model_checkpoint runs_DST/BEST --task_type DST --all --best
+Method     ACC
+---------  ----------------
+MULTI      50.04
+VANILLA    $5.34  $\pm$ 4.4$
+L2         $4.95  $\pm$ 4.4$
+EWC        $5.36  $\pm$ 4.3$
+AGEM       $5.17  $\pm$ 4.0$
+LAML       $4.03  $\pm$ 3.9$
+REPLAY     $39.42 $\pm$ 0.2$
+ADAPTERCL  $37.9  $\pm$ 0.6$
+ADAPTER MEAN:  0.9819053429791685
+ADAPTER STD:  0.0014473477557442552
+
+
+ABLATION
+python scorer.py --model_checkpoint runs_DST/MEMABLATION --task_type DST --all --ablation
+  Method  ACC
+--------  -----------------------------------------
+      10  26.63$\pm$1.26
+      50  39.41$\pm$0.28
+     100  43.13$\pm$0.31
+     500  48.22$\pm$0.53
+    1000  49.97$\pm$0.46
+
+    
+
+INTENT
+python scorer.py --model_checkpoint runs_INTENT/BEST --task_type INTENT --all --best
+Method     ACC
+---------  ----------------
+MULTI      87.5
+VANILLA    $3.27  $\pm$ 0.33$
+L2         $3.52  $\pm$ 0.7$
+EWC        $3.21  $\pm$ 0.37$
+AGEM       $9.74  $\pm$ 2.64$
+LAML       $3.73  $\pm$ 1.07$
+REPLAY     $76.45 $\pm$ 1.55$
+ADAPTERCL  $85.05 $\pm$ 0.64$
+ADAPTER MEAN:  0.9803538743136059
+ADAPTER STD:  0.0009368912609978562
+
+python scorer.py --model_checkpoint runs_INTENT/MEMABLATION --task_type INTENT --all --ablation
+Method  ACC
+--------  -----------------------------
+      10  57.286$\pm$3.80
+      50  76.446$\pm$1.55
+     100  81.496$\pm$0.86
+     500  85.91$\pm$0.55
+    1000  87.784$\pm$0.16
+
+    
+NLG 
+python scorer.py --model_checkpoint runs_NLG/BEST --task_type NLG --all --best 
+Method     ACC
+---------  ----------------
+MULTI      3.42
+VANILLA    $17.07 \pm 7.9$
+AGEM       $39.02 \pm 8.83$
+EWC        $16.37 \pm 6.33$
+L2         $15.0 \pm 5.5$
+LAML       $30.32 \pm 3.13$
+ADAPTERCL  $16.65 \pm 0.94$
+REPLAY     $6.64 \pm 0.54$
+ADAPTER MEAN:  0.9398433709889806
+ADAPTER STD:  0.0010745608118824044
+
+Method     ACC
+---------  ----------------
+MULTI      26.15
+VANILLA    $11.14 $\pm$ 2.83$
+L2         $11.99 $\pm$ 1.41$
+EWC        $11.19 $\pm$ 2.37$
+AGEM       $5.51  $\pm$ 2.1$
+LAML       $5.42  $\pm$ 1.65$
+REPLAY     $21.11 $\pm$ 0.41$
+ADAPTERCL  $21.48 $\pm$ 0.19$
+
+
+ABLATION
+python scorer.py --model_checkpoint runs_NLG/MEMABLATION --task_type NLG --all --ablation
+Method  ACC
+--------  ----------------------------------------
+      10  8.44$\pm$0.97
+      50  6.63$\pm$0.53
+     100  5.75$\pm$0.19
+     500  4.96$\pm$0.10
+    1000  4.36$\pm$0.24
+
+  Method  ACC
+--------  -----------------------------------------
+      10  18.86$\pm$0.68
+      50  21.11$\pm$0.41
+     100  21.71$\pm$0.25
+     500  22.86$\pm$0.25
+    1000  23.85$\pm$0.12
+
+
+E2E
+
+python scorer.py --model_checkpoint runs_E2E/BEST --task_type E2E --all --best
+
+DST
+Method     ACC
+---------  ----------------
+MULTI      48.9
+ADAPTERCL  35.06 $\pm$ 0.52
+AGEM       6.37 $\pm$ 4.0
+EWC        5.22 $\pm$ 4.46
+L2         3.81 $\pm$ 3.44
+LAML       4.55 $\pm$ 3.48
+VANILLA    4.91 $\pm$ 4.46
+REPLAY     30.33$\pm$ 1.24
+ADAPTER MEAN:  0.9544274481238677
+ADAPTER STD:  0.0025974980461427226
+
+
+
+INTENT
+Method     ACC
+---------  ----------------
+MULTI      95.45
+ADAPTERCL  $90.46 \pm 0.6$
+AGEM       $34.04 \pm 6.36$
+EWC        $3.95 \pm 1.3$
+L2         $3.74 \pm 1.4$
+LAML       $7.49 \pm 6.35$
+VANILLA    $4.08 \pm 1.37$
+REPLAY     $81.08 \pm 1.37$
+
+
+BLEU
+Method     ACC
+---------  ----------------
+MULTI      23.61
+ADAPTERCL  $16.76 \pm 0.34$
+AGEM       $4.53 \pm 0.64$
+EWC        $5.06 \pm 0.48$
+L2         $5.4 \pm 0.89$
+LAML       $3.0 \pm 0.93$
+VANILLA    $6.38 \pm 0.56$
+REPLAY     $17.4 \pm 0.68$
+
+EER
+Method     ACC
+---------  ----------------
+MULTI      12.56
+ADAPTERCL  $31.78 $\pm$ 1.28$
+AGEM       $62.09 $\pm$ 6.88$
+EWC        $58.2  $\pm$ 3.66$
+L2         $55.68 $\pm$ 7.09$
+LAML       $66.11 $\pm$ 6.97$
+VANILLA    $48.73 $\pm$ 3.81$
+REPLAY     $17.72 $\pm$ 0.85$
+
+
+
+BLEU
+  Method  ACC
+--------  -----------------------------------------
+      10  13.350648648648647 +- 0.7252128193220151
+      50  17.401729729729727 +- 0.6779564230939323
+     100  18.47983783783784 +- 0.5479568158380509
+     500  19.641675675675675 +- 0.21028863950889007
+    1000  14.922054054054053 +- 0.20365173153569624
+
+EER
+  Method  ACC
+--------  ---------------------------------------
+      10  25.7 +- 2.4918346654623775
+      50  17.722 +- 0.8515256895713713
+     100  16.7 +- 1.594979623694297
+     500  16.904 +- 0.8790358354469968
+    1000  44.86800000000001 +- 0.8108612705019269
+
+INTENT
+  Method  ACC
+--------  ----------------------------------------
+      10  56.077999999999996 +- 6.929399396773145
+      50  81.08200000000001 +- 1.3688447684087492
+     100  87.53999999999999 +- 0.6051776598652667
+     500  93.68199999999999 +- 0.43960891710701083
+    1000  95.02 +- 0.1726267650163214
+
+JGA
+  Method  ACC
+--------  ----------------------------------------
+      10  17.98 +- 2.1158733421450346
+      50  30.330000000000002 +- 1.2437845472588884
+     100  35.974000000000004 +- 0.7776271600195035
+     500  44.306 +- 0.2127533783515561
+    1000  48.908 +- 0.4503509742412028
