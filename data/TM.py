@@ -37,7 +37,7 @@ def prepocess_API(frame):
         for s in frame:
             parsed = remove_numbers_from_string(s["annotations"][-1]["name"]).split(".")
             API_struct[parsed[0]]["_".join(parsed[1:])] = s["text"]
-            services.add("_".join(parsed[1:]))
+            services.add(parsed[0]) 
         # print(API_struct)
         services = [s.strip() for s in services]
         return create_API_str(API_struct), API_struct, list(services)
