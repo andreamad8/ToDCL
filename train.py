@@ -124,7 +124,8 @@ def train(hparams, *args):
             #load best model
             # this model are better if the are runned to they epoch number
             if(hparams.CL != "LAMOL" and hparams.CL != "EWC"):
-                checkpoint = torch.load(trainer.checkpoint_callback.best_model_path)
+                # checkpoint = torch.load(trainer.checkpoint_callback.best_model_path) use this if the next doesn't work
+                checkpoint = torch.load(trainer.checkpoint_callback.best_model_path, map_location=lambda storage, loc: storage)
                 print("load from:",trainer.checkpoint_callback.best_model_path)
                 checkpoint['state_dict'] = { k.replace('model.', ''): v for k, v in checkpoint['state_dict'].items() }
                 model.model.load_state_dict(checkpoint['state_dict'])
