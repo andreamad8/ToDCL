@@ -116,7 +116,7 @@ def train(hparams, *args):
                 max_epochs=hparams.n_epochs,
                 callbacks=[pl.callbacks.EarlyStopping(monitor='val_loss', min_delta=0.00, patience=5, verbose=True, mode='min')],
                 gpus=[0],
-                limit_train_batches=100,
+                #limit_train_batches=100,
             )
             trainer.fit(model, task_loader, val_loader[task_id])
             end = time.time()
