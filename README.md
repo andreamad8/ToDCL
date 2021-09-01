@@ -1,9 +1,19 @@
 # Continual Learning for Task-Oriented Dialogue Systems
-Continual learning for task-oriented dialogue systems can allow us to add new domains and functionalities through time without incurring the high cost of a whole system retraining. In this paper, we propose a continual learning benchmark for task-oriented dialogue with 37 domains to be learned continuously in four settings, such as intent recognition, state tracking, natural language generation, and end-to-end. Moreover, we implement and compare multiple existing continual learning baselines, and we propose a simple yet effective architectural-based method based on residual adapters. Our experiments show that our methods and a simple replay-based strategy archive comparable performance to multi-task learning. Finally, we reveal several limitations of continual learning methods in term of parameter usage and memory size. The proposed benchmark is released together with several baselines to promote more research in this direction. 
+
+This repository includes the dataset and baselines of the paper:
+
+**Continual Learning for Task-Oriented Dialogue Systems** (Accepted in EMNLP 2021) [[PDF]](https://arxiv.org/abs/2012.15504). 
+
+**Authors**: [Andrea Madotto](https://andreamad8.github.io), [Zhaojiang Lin](https://zlinao.github.io), Zhenpeng Zhou, Seungwhan Moon, Paul Crook, Bing Liu, Zhou Yu, Eunjoon Cho, Zhiguang Wang,Pascale Fung
+
+
+## Abstract
+Continual learning in task-oriented dialogue systems allows the system to add new domains and functionalities over time after deployment, without incurring the high cost of retraining the whole system each time. In this paper, we propose a first-ever continual learning benchmark for task-oriented dialogue systems with 37 domains to be learned continuously in both modularized and end-to-end learning settings.  In addition, we implement and compare multiple existing continual learning baselines, and we propose a simple yet effective architectural method based on residual adapters. We also suggest that the upper bound performance of continual learning should be equivalent to multitask learning when data from all domain is available at once. Our experiments demonstrate that the proposed architectural method and a simple replay-based strategy perform better, by a large margin, compared to other continuous learning techniques, and only slightly worse than the multitask learning upper bound while being 20X faster in learning new domains. We also report several trade-offs in terms of parameter usage, memory size and training time, which are important in the design of a task-oriented dialogue system. The proposed benchmark is released to promote more research in this direction.  
 
 ## Installation
 The Continual Learning benchmark is created by jointly pre-processing four task-oriented dataset such as [Task-Master (TM19)](https://github.com/google-research-datasets/Taskmaster.git), [Task-Master 2020 (TM20)](https://github.com/google-research-datasets/Taskmaster.git), [Schema Guided Dialogue (SGD)](https://github.com/google-research-datasets/dstc8-schema-guided-dialogue.git) and [MultiWoZ](https://github.com/budzianowski/multiwoz.git). To download the dataset, and setup basic package use: 
 ```
+pip install -r requirements.txt
 cd data
 bash download.sh
 ```
