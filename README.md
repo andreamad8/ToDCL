@@ -4,7 +4,7 @@ This repository includes the dataset and baselines of the paper:
 
 **Continual Learning for Task-Oriented Dialogue Systems** (Accepted in EMNLP 2021) [[PDF]](https://arxiv.org/abs/2012.15504). 
 
-**Authors**: [Andrea Madotto](https://andreamad8.github.io), [Zhaojiang Lin](https://zlinao.github.io), Zhenpeng Zhou, Seungwhan Moon, Paul Crook, Bing Liu, Zhou Yu, Eunjoon Cho, Zhiguang Wang,Pascale Fung
+**Authors**: [Andrea Madotto](https://andreamad8.github.io), [Zhaojiang Lin](https://zlinao.github.io), Zhenpeng Zhou, [Seungwhan Moon](https://shanemoon.com/), [Paul Crook](http://pacrook.net/), [Bing Liu](http://bingliu.me/), [Zhou Yu](https://www.cs.columbia.edu/~zhouyu/), Eunjoon Cho, [Zhiguang Wang](https://research.fb.com/people/wang-zhiguang/), [Pascale Fung](https://pascale.home.ece.ust.hk/)
 
 
 ## Abstract
