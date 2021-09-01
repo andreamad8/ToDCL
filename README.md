@@ -77,3 +77,6 @@ python scorer.py --model_checkpoint runs_E2E/BEST/ --task_type E2E
 | REPLAY  |  0.785325 | 0.297534  | 16.2668  | 0.190309 |
 | ADAPTER | 0.906857  | 0.35059   | 16.5768  | 0.331949 |
 | MULTI   | 0.954546  | 0.488995  | 23.6073  | 0.12558  |
+
+# Acknowledgement
+I would like to thanks [Saujas Vaduguru](saujas.vaduguru@mila.quebec), [Qi Zhu](zhuq96@gmail.com), and [Maziar Sargordi](maziar.sargordi@mila.quebec) for helping with debugging the code. 
