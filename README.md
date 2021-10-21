@@ -46,18 +46,18 @@ CUDA_VISIBLE_DEVICES=0 python train.py --task_type NLG --CL ADAPTER --bottleneck
 
 ### Adapter
 ```
-python train.py --task_type E2E --CL ADAPTER --bottleneck_size 300 --lr 6.25e-3 --n_epochs 10 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
-python train.py --task_type INTENT --CL ADAPTER --bottleneck_size 50 --lr 6.25e-3 --n_epochs 10 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
-python train.py --task_type NLG --CL ADAPTER --bottleneck_size 50 --lr 6.25e-3 --n_epochs 10 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
-python train.py --task_type DST --CL ADAPTER --bottleneck_size 100 --lr 6.25e-3 --n_epochs 10 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
+python train.py --task_type E2E --CL ADAPTER --bottleneck_size 300 --lr 6.25e-3 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
+python train.py --task_type INTENT --CL ADAPTER --bottleneck_size 50 --lr 6.25e-3 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
+python train.py --task_type NLG --CL ADAPTER --bottleneck_size 50 --lr 6.25e-3 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
+python train.py --task_type DST --CL ADAPTER --bottleneck_size 100 --lr 6.25e-3 --n_epochs 10 --train_batch_size 10 --gradient_accumulation_steps 8
 ```
 
 ### Replay
 ```
-python train.py --task_type E2E --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
-python train.py --task_type INTENT --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
-python train.py --task_type NLG --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
-python train.py --task_type DST --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
+python train.py --task_type E2E --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
+python train.py --task_type INTENT --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
+python train.py --task_type NLG --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
+python train.py --task_type DST --CL REPLAY --episodic_mem_size 50 --lr 6.25e-5 --n_epochs 10 --train_batch_size 8 --gradient_accumulation_steps 8
 ```
 
 
