@@ -73,29 +73,18 @@ class Seq2SeqToD(pl.LightningModule):
         dev = next(self.model.parameters()).device
         self.grads = torch.Tensor(sum(self.grad_dims), self.n_tasks).to(dev)
 
-    def compute_PPL(self, batch, task_id=-1, device="cuda"):
-        task_id = str(task_id)
-        self.model.train_adapter(task_id)
-        self.model.set_active_adapters(task_id)
-        with torch.no_grad():
-            lm_logits = self.model(
-                input_ids=batch["input_id_PPL"].to(device),
-                attention_mask=None,
-                labels=None,
-            )[0]
-        # Shift so that tokens < n predict n
-        shift_logits = lm_logits[..., :-1, :].contiguous()
-        shift_labels = batch["output_id_PPL"].to(device)[..., 1:].contiguous()
-        # Flatten the tokens
-        loss_fct = CrossEntropyLoss(reduction="none")
-        loss = loss_fct(
-            shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
-        )
-        loss = torch.reshape(loss, shift_labels.size())
-        return (loss.sum(1) / (loss != 0).sum(1)).tolist()
+    def compute_PPL(self, batch, task_id=-1, device="cuda", tokenizer=None):
+        # To Implement
+        if task_id == -1:
+            return torch.tensor([1.0])
+        else:
+            return torch.where(
+                torch.tensor([batch["task_id"][0] == self.task_list_seen[task_id]]),
+                0.0,
+                1.0,
+            )
 
     def training_step(self, batch, batch_idx):
-
         if self.CL == "GEM" and not self.first_task:
             dev = next(self.model.parameters()).device
             for id_task, (_, task_memory) in enumerate(self.episodic_mem.items()):

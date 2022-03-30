@@ -27,17 +27,20 @@ import subprocess
 import numpy as np
 
 
-def get_free_gpu():
+def get_free_gpu(num_gpu):
     cmd = "nvidia-smi -q -d pids |grep -A4 GPU|grep Processes >tmp"
     p = subprocess.Popen(["/bin/bash", "-c", cmd])
     p.wait()
     memory_available = [x.split(":")[-1].strip() for x in open("tmp", "r").readlines()]
-    id = memory_available.index("None")
-    print("Allocating Model to " + str(id))
-    return id
+    ids = []
+    for index in range(len(memory_available)):
+        if memory_available[index] == "None":
+            ids.append(str(index))
+    print("Allocating Model to " + str(ids[:num_gpu]))
+    return ",".join(ids[:num_gpu])
 
 
-os.environ["CUDA_VISIBLE_DEVICES"] = str(get_free_gpu())
+os.environ["CUDA_VISIBLE_DEVICES"] = get_free_gpu(1)
 reserve = torch.tensor(1)
 reserve.to("cuda:0")
 
@@ -295,7 +298,7 @@ def train(hparams, *args):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--model_checkpoint", type=str, default="gpt2")
+    parser.add_argument("--model_checkpoint", type=str, default="t5-base")
     parser.add_argument(
         "--train_batch_size", type=int, default=1, help="Batch size for training"
     )
