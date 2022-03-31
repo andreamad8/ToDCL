@@ -360,6 +360,7 @@ def test_model_seq2seq_ADAPTER(
     for pred_task_id, task_loader in tqdm(
         test_dataset_by_predicted_id.items(), total=len(test_dataset_by_predicted_id)
     ):
+        pred_task_id = str(pred_task_id)
         # print(f"Task Id: {task_id}")
         for idx_b, batch in tqdm(enumerate(task_loader), total=len(task_loader)):
             with torch.no_grad():
@@ -370,8 +371,10 @@ def test_model_seq2seq_ADAPTER(
                         input_text=[b + "[SOS]" for b in batch["history"]],
                         device=device,
                         max_length=100,
+                        task_id=pred_task_id,
                     )
                 else:
+                    model.model.set_active_adapters(task_id)
                     responses = model.model.generate(
                         input_ids=batch["encoder_input"].to(device),
                         attention_mask=batch["attention_mask"].to(device),
