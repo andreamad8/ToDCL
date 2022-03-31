@@ -76,9 +76,6 @@ def train(hparams, *args):
 
     # train!
     model = Seq2SeqToD(hparams)
-    if hparams.CL == "ADAPTER":
-        for i in range(hparams.number_of_adpt):
-            model.model.add_adapter(str(i))
 
     (
         train_loader,

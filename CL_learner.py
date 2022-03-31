@@ -11,6 +11,7 @@ from transformers import (
     BartTokenizer,
     BartForConditionalGeneration,
     T5ForConditionalGeneration,
+    HoulsbyConfig,
 )
 from utils.dataloader import get_data_loaders, get_current_task_data, make_loader
 from collections import defaultdict
@@ -48,6 +49,11 @@ class Seq2SeqToD(pl.LightningModule):
                 pad_token="[PAD]",
             )
             model.resize_token_embeddings(new_num_tokens=len(tokenizer))
+        if args.CL == "ADAPTER":
+            reduction = round(model.config.d_model / args.bottleneck_size)
+            adapter_config = HoulsbyConfig(reduction_factor=reduction)
+            for i in range(args.number_of_adpt):
+                model.add_adapter(str(i), config=adapter_config)
 
         self.model = model
         self.tokenizer = tokenizer
@@ -125,7 +131,6 @@ class Seq2SeqToD(pl.LightningModule):
 
             self.model.zero_grad()
 
-        print(batch["encoder_input"].size())
         ## LOSS ON CURRENT DATA
         if self.CL == "ADAPTER":
             task_id = str(self.task_list_seen.index(batch["task_id"][0]))
@@ -219,7 +224,13 @@ class Seq2SeqToD(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return AdamW(self.parameters(), lr=self.lr, correct_bias=True)
+        if self.CL == "ADAPTER":
+            parameters_to_update = [
+                p for n, p in self.named_parameters() if "adapter" in str(n)
+            ]
+            return AdamW(parameters_to_update, lr=self.lr, correct_bias=True)
+        else:
+            return AdamW(self.parameters(), lr=self.lr, correct_bias=True)
 
     def backward(self, loss, optimizer, optimizer_idx):
         if (self.CL == "GEM" or self.CL == "AGEM") and not self.first_task:
