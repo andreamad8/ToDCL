@@ -11,7 +11,12 @@ from random import sample
 import pytorch_lightning as pl
 import random
 from pytorch_lightning import Trainer, seed_everything
-from utils.dataloader import get_data_loaders, get_current_task_data, make_loader
+from utils.dataloader import (
+    get_data_loaders,
+    get_current_task_data,
+    make_loader,
+    ValEveryNSteps,
+)
 
 from test import (
     test_model_seq2seq,
@@ -25,6 +30,10 @@ from argparse import ArgumentParser
 
 import subprocess
 import numpy as np
+
+import warnings
+
+warnings.filterwarnings("ignore")
 
 
 def get_free_gpu(num_gpu):
@@ -115,7 +124,7 @@ def train(hparams, *args):
                     patience=5,
                     verbose=False,
                     mode="min",
-                )
+                ),
             ],
             gpus=[0],
         )
@@ -175,15 +184,20 @@ def train(hparams, *args):
                 default_root_dir=f"{hparams.saving_dir}/{task_num}_{task_id}",
                 accumulate_grad_batches=hparams.gradient_accumulation_steps,
                 gradient_clip_val=hparams.max_norm,
-                max_epochs=hparams.n_epochs,
+                max_steps=hparams.n_steps,
+                min_steps=250,
+                max_epochs=1000,
+                check_val_every_n_epoch=100,
                 callbacks=[
+                    ValEveryNSteps(50),
+                    pl.callbacks.ModelCheckpoint(monitor="val_loss"),
                     pl.callbacks.EarlyStopping(
                         monitor="val_loss",
                         min_delta=0.00,
                         patience=5,
                         verbose=True,
                         mode="min",
-                    )
+                    ),
                 ],
                 gpus=[0],
                 # limit_train_batches=100,
@@ -300,7 +314,7 @@ if __name__ == "__main__":
         "--train_batch_size", type=int, default=1, help="Batch size for training"
     )
     parser.add_argument(
-        "--valid_batch_size", type=int, default=1, help="Batch size for validation"
+        "--valid_batch_size", type=int, default=10, help="Batch size for validation"
     )
     parser.add_argument(
         "--test_batch_size", type=int, default=1, help="Batch size for validation"
@@ -330,7 +344,13 @@ if __name__ == "__main__":
     )
     parser.add_argument("--debug", action="store_true", help="continual baseline")
     parser.add_argument(
-        "--n_epochs", type=int, default=5, help="Number of training epochs"
+        "--n_steps",
+        type=int,
+        default=1000,
+        help="Number of training steps in continual",
+    )
+    parser.add_argument(
+        "--n_epochs", type=int, default=5, help="Number of training steps in multi"
     )
 
     parser.add_argument("--bottleneck_size", type=int, default=100)

@@ -27,7 +27,7 @@ protobuf==3.17.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pyparsing==2.4.7
-pytorch-lightning==1.2.5
+pytorch-lightning==1.5.4
 PyYAML
 regex==2021.4.4
 requests==2.25.1

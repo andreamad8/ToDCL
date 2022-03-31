@@ -3,11 +3,14 @@ import numpy as np
 from tqdm import tqdm
 from itertools import chain
 from torch.utils.data import Dataset, DataLoader
+from pytorch_lightning.trainer.states import RunningStage
 from functools import partial
 from utils.preprocess import get_datasets
 from collections import defaultdict
 import pprint
+import pytorch_lightning as pl
 import random
+import math
 from tabulate import tabulate
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -20,6 +23,21 @@ ATTR_TO_SPECIAL_TOKEN = {
     "additional_special_tokens": ["<speaker1>", "<speaker2>"],
 }
 MODEL_INPUTS = ["input_ids", "lm_labels", "token_type_ids"]
+
+
+class ValEveryNSteps(pl.Callback):
+    def __init__(self, every_n_steps):
+        self.every_n_steps = every_n_steps
+
+    def on_batch_end(self, trainer, pl_module):
+        if trainer.global_step % self.every_n_steps == 0 and trainer.global_step != 0:
+            trainer.training = False
+            stage = trainer.state.stage
+            trainer.state.stage = RunningStage.VALIDATING
+            trainer._run_evaluate()
+            trainer.state.stage = stage
+            trainer.training = True
+            trainer.logger_connector._epoch_end_reached = False
 
 
 class DatasetTrain(Dataset):
