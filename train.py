@@ -185,18 +185,20 @@ def train(hparams, *args):
                 accumulate_grad_batches=hparams.gradient_accumulation_steps,
                 gradient_clip_val=hparams.max_norm,
                 max_steps=hparams.n_steps,
-                min_steps=250,
                 max_epochs=1000,
-                check_val_every_n_epoch=100,
+                check_val_every_n_epoch=1000,
                 callbacks=[
-                    ValEveryNSteps(50),
-                    pl.callbacks.ModelCheckpoint(monitor="val_loss"),
+                    ValEveryNSteps(20),
+                    pl.callbacks.ModelCheckpoint(
+                        monitor="val_loss", save_on_train_epoch_end=False
+                    ),
                     pl.callbacks.EarlyStopping(
                         monitor="val_loss",
                         min_delta=0.00,
                         patience=5,
                         verbose=True,
                         mode="min",
+                        check_on_train_epoch_end=False,
                     ),
                 ],
                 gpus=[0],

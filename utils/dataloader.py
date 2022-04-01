@@ -27,9 +27,15 @@ MODEL_INPUTS = ["input_ids", "lm_labels", "token_type_ids"]
 
 class ValEveryNSteps(pl.Callback):
     def __init__(self, every_n_steps):
+        self.last_run = None
         self.every_n_steps = every_n_steps
 
     def on_batch_end(self, trainer, pl_module):
+        # Prevent Running validation many times in gradient accumulation
+        if trainer.global_step == self.last_run:
+            return
+        else:
+            self.last_run = None
         if trainer.global_step % self.every_n_steps == 0 and trainer.global_step != 0:
             trainer.training = False
             stage = trainer.state.stage
@@ -38,6 +44,7 @@ class ValEveryNSteps(pl.Callback):
             trainer.state.stage = stage
             trainer.training = True
             trainer.logger_connector._epoch_end_reached = False
+            self.last_run = trainer.global_step
 
 
 class DatasetTrain(Dataset):
