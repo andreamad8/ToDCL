@@ -12,6 +12,8 @@ import pytorch_lightning as pl
 import random
 import math
 from tabulate import tabulate
+import logging
+logging.basicConfig()
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -43,7 +45,12 @@ class ValEveryNSteps(pl.Callback):
             trainer._run_evaluate()
             trainer.state.stage = stage
             trainer.training = True
-            trainer.logger_connector._epoch_end_reached = False
+
+            try:
+                trainer.logger_connector._epoch_end_reached = False
+            except AttributeError:
+                logging.error("Could not find logger_connecter")
+
             self.last_run = trainer.global_step
 
 
