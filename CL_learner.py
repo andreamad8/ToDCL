@@ -85,7 +85,16 @@ class Seq2SeqToD(pl.LightningModule):
         # To Implement
 
         logging.error(f"In Compute PPL with: batch ({batch}), task_id: ({task_id}), and tokenizer ({tokenizer})")
-        raise("THIS IS INVALID")
+        with torch.no_grad():
+            out_tuple = self.model(
+                input_ids=batch["input_id_PPL"].to(device),
+                attention_mask=None,
+                labels=None,
+                task_id=task_id
+            )
+            logging.warn(f'Out Tuple is: {out_tuple}')
+
+        raise "THIS BREAKS"
         if task_id == -1:
             return torch.tensor([1.0])
         else:
