@@ -88,9 +88,7 @@ class Seq2SeqToD(pl.LightningModule):
         with torch.no_grad():
             model_out = self.model(
                 input_ids=batch["input_id_PPL"].to(device),
-                attention_mask=None,
-                labels=None,
-                return_dict = True
+                labels=batch['output_id_PPL'].to(device)
             )
             logging.warn(f'Model Out is: {model_out}')
 
