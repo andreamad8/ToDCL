@@ -83,14 +83,11 @@ class Seq2SeqToD(pl.LightningModule):
 
     def compute_PPL(self, batch, task_id=-1, device="cuda", tokenizer=None):
         # To Implement
-
-        logging.error(f"In Compute PPL with: batch ({batch}), task_id: ({task_id}), and tokenizer ({tokenizer})")
         with torch.no_grad():
             model_out = self.model(
                 input_ids=batch["input_id_PPL"].to(device),
                 labels=batch['output_id_PPL'].to(device)
             )
-            logging.warn(f'Model Out is: {model_out}')
 
         shift_logits = model_out.logits[..., :-1, :].contiguous()
         shift_labels = batch["output_id_PPL"].to(device)[..., 1:].contiguous()
