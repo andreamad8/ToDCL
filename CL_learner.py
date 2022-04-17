@@ -4,6 +4,7 @@ from torch.nn import CrossEntropyLoss
 from random import sample
 import pytorch_lightning as pl
 import logging
+logging.basicConfig()
 
 from transformers import (
     AdamW,
@@ -17,8 +18,6 @@ from transformers import (
 )
 from utils.dataloader import get_data_loaders, get_current_task_data, make_loader
 from collections import defaultdict
-
-logger = logging.getLogger(__name__)
 
 class Seq2SeqToD(pl.LightningModule):
     def __init__(self, args):
@@ -85,7 +84,7 @@ class Seq2SeqToD(pl.LightningModule):
     def compute_PPL(self, batch, task_id=-1, device="cuda", tokenizer=None):
         # To Implement
 
-        logger.error(f"In Compute PPL with: batch ({batch}), task_id: ({task_id}), and tokenizer ({tokenizer})")
+        logging.error(f"In Compute PPL with: batch ({batch}), task_id: ({task_id}), and tokenizer ({tokenizer})")
         raise("THIS IS INVALID")
         if task_id == -1:
             return torch.tensor([1.0])

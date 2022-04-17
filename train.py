@@ -33,10 +33,10 @@ import numpy as np
 
 import warnings
 import logging
+logging.basicConfig()
 
 warnings.filterwarnings("ignore")
 
-logger = logging.getLogger(__name__)
 
 def get_free_gpu(num_gpu):
     cmd = "nvidia-smi -q -d pids |grep -A4 GPU|grep Processes >tmp"
