@@ -235,6 +235,8 @@ def train(hparams, *args):
                     for k, v in checkpoint["state_dict"].items()
                 }
                 model.model.load_state_dict(checkpoint["state_dict"])
+            elif hparams.merge == True:
+                model = update_adapters(task_id, task_loader, model)
 
             # testing the model by generating the answers
             if hparams.test_every_step:
@@ -393,6 +395,8 @@ if __name__ == "__main__":
     parser.add_argument("--task_type", type=str, default="NLG")
     #  options=["VANILLA"]
     parser.add_argument("--CL", type=str, default="MULTI")
+
+    parser.add_argument("--merge", action="store_true")
     # options=[1,2,3,4,5]
     parser.add_argument("--seed", default=1, type=int)
 
