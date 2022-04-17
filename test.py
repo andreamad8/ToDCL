@@ -182,7 +182,9 @@ def generate_sample_prev_task(
     task_id_adpt=-1,
 ):
     # device = torch.device(f"cuda:{args.GPU[0]}")
-    device = torch.device(f"cuda:0")
+    device = "cpu"
+    if (torch.cuda.is_available()):
+        device = torch.device(f"cuda:0")
     model.to(device)
     model.eval()
     ## notice that this sample is just to have the data struct
@@ -248,7 +250,9 @@ def generate_sample_prev_task(
 
 
 def test_model_seq2seq(args, model, tokenizer, test_loader, time="0_['']"):
-    device = torch.device(f"cuda:0")
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = torch.device(f"cuda:0")
     model.to(device)
     model.eval()
     results = []
@@ -302,7 +306,9 @@ def test_model_seq2seq_ADAPTER(
     args, model, tokenizer, test_loader, test_dataset, time="0_['']", max_seen_task=0
 ):
     # device = torch.device(f"cuda:{args.GPU[0]}")
-    device = torch.device(f"cuda:0")
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = torch.device(f"cuda:0")
     model.model.to(device)
     model.model.eval()
     results = []

@@ -32,9 +32,11 @@ import subprocess
 import numpy as np
 
 import warnings
+import logging
 
 warnings.filterwarnings("ignore")
 
+logger = logging.getLogger(__name__)
 
 def get_free_gpu(num_gpu):
     cmd = "nvidia-smi -q -d pids |grep -A4 GPU|grep Processes >tmp"
@@ -111,6 +113,7 @@ def train(hparams, *args):
     if hparams.CL == "GEM":
         model.set_up_gem()
 
+
     if hparams.multi:
         start = time.time()
         train_parameters = {
@@ -130,6 +133,9 @@ def train(hparams, *args):
         }
         if torch.cuda.is_available():
             train_parameters['gpus'] = [0]
+
+
+
 
         trainer = Trainer(**train_parameters)
         trainer.fit(model, train_loader, val_loader)
@@ -184,7 +190,7 @@ def train(hparams, *args):
             print()
             print(f"TASK:{task_id}")
             start = time.time()
-            train_params = {
+            train_parameters = {
                 'default_root_dir': f"{hparams.saving_dir}/{task_num}_{task_id}",
                 'accumulate_grad_batches': hparams.gradient_accumulation_steps,
                 'gradient_clip_val': hparams.max_norm,
@@ -210,7 +216,7 @@ def train(hparams, *args):
                 train_params['gpus'] = [0]
 
             trainer = Trainer(
-                **train_params
+                **train_parameters
             )
             trainer.fit(model, task_loader, val_loader[task_id])
             end = time.time()
