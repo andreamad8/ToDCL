@@ -86,23 +86,21 @@ class Seq2SeqToD(pl.LightningModule):
 
         logging.error(f"In Compute PPL with: batch ({batch}), task_id: ({task_id}), and tokenizer ({tokenizer})")
         with torch.no_grad():
-            out_tuple = self.model(
+            model_out = self.model(
                 input_ids=batch["input_id_PPL"].to(device),
                 attention_mask=None,
                 labels=None,
-                task_id=task_id
+                return_dict = True
             )
-            logging.warn(f'Out Tuple is: {out_tuple}')
+            logging.warn(f'Model Out is: {model_out}')
 
-        raise "THIS BREAKS"
-        if task_id == -1:
-            return torch.tensor([1.0])
-        else:
-            return torch.where(
-                torch.tensor([batch["task_id"][0] == self.task_list_seen[task_id]]),
-                0.0,
-                1.0,
-            )
+        shift_logits = model_out.logits[..., :-1, :].contiguous()
+        shift_labels = batch["output_id_PPL"].to(device)[..., 1:].contiguous()
+        # Flatten the tokens
+        loss_fct = CrossEntropyLoss(reduction='none')
+        loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+        loss = torch.reshape(loss, shift_labels.size())
+        return (loss.sum(1)/(loss!=0).sum(1)).tolist()
 
     def training_step(self, batch, batch_idx):
         if self.CL == "GEM" and not self.first_task:
