@@ -213,7 +213,7 @@ def train(hparams, *args):
                 ],
             }
             if torch.cuda.is_available():
-                train_params['gpus'] = [0]
+                train_parameters['gpus'] = [0]
 
             trainer = Trainer(
                 **train_parameters
