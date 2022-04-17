@@ -32,6 +32,8 @@ import subprocess
 import numpy as np
 
 import warnings
+import logging
+logging.basicConfig()
 
 warnings.filterwarnings("ignore")
 
@@ -51,7 +53,8 @@ def get_free_gpu(num_gpu):
 
 os.environ["CUDA_VISIBLE_DEVICES"] = get_free_gpu(1)
 reserve = torch.tensor(1)
-reserve.to("cuda:0")
+if torch.cuda.is_available():
+    reserve.to("cuda:0")
 
 
 def get_checkpoint(log_dir, index_to_load):
@@ -110,14 +113,15 @@ def train(hparams, *args):
     if hparams.CL == "GEM":
         model.set_up_gem()
 
+
     if hparams.multi:
         start = time.time()
-        trainer = Trainer(
-            default_root_dir=hparams.saving_dir,
-            accumulate_grad_batches=hparams.gradient_accumulation_steps,
-            gradient_clip_val=hparams.max_norm,
-            max_epochs=hparams.n_epochs,
-            callbacks=[
+        train_parameters = {
+            'default_root_dir': hparams.saving_dir,
+            'accumulate_grad_batches': hparams.gradient_accumulation_steps,
+            'gradient_clip_val': hparams.max_norm,
+            'max_epochs': hparams.n_epochs,
+            'callbacks': [
                 pl.callbacks.EarlyStopping(
                     monitor="val_loss",
                     min_delta=0.00,
@@ -126,8 +130,14 @@ def train(hparams, *args):
                     mode="min",
                 ),
             ],
-            gpus=[0],
-        )
+        }
+        if torch.cuda.is_available():
+            train_parameters['gpus'] = [0]
+
+
+
+
+        trainer = Trainer(**train_parameters)
         trainer.fit(model, train_loader, val_loader)
         end = time.time()
         print("Time elapsed:", end - start)
@@ -180,14 +190,14 @@ def train(hparams, *args):
             print()
             print(f"TASK:{task_id}")
             start = time.time()
-            trainer = Trainer(
-                default_root_dir=f"{hparams.saving_dir}/{task_num}_{task_id}",
-                accumulate_grad_batches=hparams.gradient_accumulation_steps,
-                gradient_clip_val=hparams.max_norm,
-                max_steps=hparams.n_steps,
-                max_epochs=1000,
-                check_val_every_n_epoch=1000,
-                callbacks=[
+            train_parameters = {
+                'default_root_dir': f"{hparams.saving_dir}/{task_num}_{task_id}",
+                'accumulate_grad_batches': hparams.gradient_accumulation_steps,
+                'gradient_clip_val': hparams.max_norm,
+                'max_steps': hparams.n_steps,
+                'max_epochs': 1000,
+                'check_val_every_n_epoch': 1000,
+                'callbacks': [
                     ValEveryNSteps(20),
                     pl.callbacks.ModelCheckpoint(
                         monitor="val_loss", save_on_train_epoch_end=False
@@ -201,8 +211,12 @@ def train(hparams, *args):
                         check_on_train_epoch_end=False,
                     ),
                 ],
-                gpus=[0],
-                # limit_train_batches=100,
+            }
+            if torch.cuda.is_available():
+                train_parameters['gpus'] = [0]
+
+            trainer = Trainer(
+                **train_parameters
             )
             trainer.fit(model, task_loader, val_loader[task_id])
             end = time.time()

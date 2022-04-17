@@ -3,6 +3,9 @@ import torch
 from torch.nn import CrossEntropyLoss
 from random import sample
 import pytorch_lightning as pl
+import logging
+logging.basicConfig()
+
 from transformers import (
     AdamW,
     GPT2Tokenizer,
@@ -15,7 +18,6 @@ from transformers import (
 )
 from utils.dataloader import get_data_loaders, get_current_task_data, make_loader
 from collections import defaultdict
-
 
 class Seq2SeqToD(pl.LightningModule):
     def __init__(self, args):
@@ -81,14 +83,19 @@ class Seq2SeqToD(pl.LightningModule):
 
     def compute_PPL(self, batch, task_id=-1, device="cuda", tokenizer=None):
         # To Implement
-        if task_id == -1:
-            return torch.tensor([1.0])
-        else:
-            return torch.where(
-                torch.tensor([batch["task_id"][0] == self.task_list_seen[task_id]]),
-                0.0,
-                1.0,
+        with torch.no_grad():
+            model_out = self.model(
+                input_ids=batch["input_id_PPL"].to(device),
+                labels=batch['output_id_PPL'].to(device)
             )
+
+        shift_logits = model_out.logits[..., :-1, :].contiguous()
+        shift_labels = batch["output_id_PPL"].to(device)[..., 1:].contiguous()
+        # Flatten the tokens
+        loss_fct = CrossEntropyLoss(reduction='none')
+        loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+        loss = torch.reshape(loss, shift_labels.size())
+        return (loss.sum(1)/(loss!=0).sum(1)).tolist()
 
     def training_step(self, batch, batch_idx):
         if self.CL == "GEM" and not self.first_task:
