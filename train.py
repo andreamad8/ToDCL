@@ -221,7 +221,6 @@ def train(hparams, *args):
             trainer.fit(model, task_loader, val_loader[task_id])
             end = time.time()
             print("Time elapsed:", end - start)
-            print(model.state_dict())
             # load best model
             # this model are better if the are runned to they epoch number
             if hparams.CL != "LAMOL" and hparams.CL != "EWC":
