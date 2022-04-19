@@ -1,12 +1,15 @@
 def update_adapters(task_id, task_loader, model):
     new_adapter_weights = find_best_merge(task_id, task_loader, model)
-
     # Modify the weights of the adapters based on what is returned
+    active_state_dict = model.state_dict()
 
     return model
 
 
 def find_best_merge(current_task_id, task_loader, model):
+    # I am expecting [best_weights] to be an ordered list of
+    # tensors [t1, t2, t3, ...] where each of t_i are the weights
+    # of the 1st, 2nd, ... adapter.
     best_weights = None
 
     # Iterate Through and Find Best Merge
