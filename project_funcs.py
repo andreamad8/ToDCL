@@ -8,7 +8,7 @@ def update_adapters(task_id, task_loader, model):
     for layer_name, new_tensor_weight in new_adapter_weights.keys():
         active_state_dict[layer_name] = new_tensor_weight
 
-    model = model.load_state_dict(active_state_dict)
+    model.load_state_dict(active_state_dict)
     return model
 
 
