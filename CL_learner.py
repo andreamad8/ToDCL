@@ -4,6 +4,7 @@ from torch.nn import CrossEntropyLoss
 from random import sample
 import pytorch_lightning as pl
 import logging
+
 logging.basicConfig()
 
 from transformers import (
@@ -18,6 +19,7 @@ from transformers import (
 )
 from utils.dataloader import get_data_loaders, get_current_task_data, make_loader
 from collections import defaultdict
+
 
 class Seq2SeqToD(pl.LightningModule):
     def __init__(self, args):
@@ -56,6 +58,7 @@ class Seq2SeqToD(pl.LightningModule):
             adapter_config = HoulsbyConfig(reduction_factor=reduction)
             for i in range(args.number_of_adpt):
                 model.add_adapter(str(i), config=adapter_config)
+            model.add_adapter("temporary", config=adapter_config)
 
         self.model = model
         self.tokenizer = tokenizer
@@ -86,16 +89,18 @@ class Seq2SeqToD(pl.LightningModule):
         with torch.no_grad():
             model_out = self.model(
                 input_ids=batch["input_id_PPL"].to(device),
-                labels=batch['output_id_PPL'].to(device)
+                labels=batch["output_id_PPL"].to(device),
             )
 
         shift_logits = model_out.logits[..., :-1, :].contiguous()
         shift_labels = batch["output_id_PPL"].to(device)[..., 1:].contiguous()
         # Flatten the tokens
-        loss_fct = CrossEntropyLoss(reduction='none')
-        loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+        loss_fct = CrossEntropyLoss(reduction="none")
+        loss = loss_fct(
+            shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1)
+        )
         loss = torch.reshape(loss, shift_labels.size())
-        return (loss.sum(1)/(loss!=0).sum(1)).tolist()
+        return (loss.sum(1) / (loss != 0).sum(1)).tolist()
 
     def training_step(self, batch, batch_idx):
         if self.CL == "GEM" and not self.first_task:
